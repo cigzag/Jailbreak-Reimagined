@@ -31,6 +31,10 @@ methodmap WardenController {
     {
         return view_as<WardenController>(client);
     }
+    property int index 
+    { 
+        public get() { return view_as<int>(this); } 
+    }
     property int iWarden {
         public get() { return g_iWarden; }
         public set( int value ) { g_iWarden = value; }
@@ -81,7 +85,5 @@ public Action Cmd_Unwarden(int client, int args) {
 /*
 DESIGN:
 - WHEN ADDING STATE VARIABLES FOR SIMPLE FEATURES, ENFORCE THE USAGE OF SIMILAR OOP PRINCIPLES, DATAPACKS & METHODMAPS.
-
-
 
 */
