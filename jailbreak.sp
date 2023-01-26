@@ -11,20 +11,26 @@ public Plugin myinfo = {
     url         = "https://github.com/cigzag/"
 };
 
+// Globals
+
+ConVar g_cEnabled;
+
+int g_iWarden = 0; // Warden player index, we set to zero to define no warden.
+
 public void OnPluginStart()
 {
-    PrintToServer("[TF2] Jailbreak Reimagined (V1.0.0) loading...");
+    // CONVARS
+    g_cEnabled = CreateConVar("sm_jb_enabled", "1", "Enable Jailbreak Reimagined?", FCVAR_REPLICATED, true, 0.0, true, 1.0); // FCVAR_REPLICATE?
+    
     // COMMANDS
     RegConsoleCmd("sm_warden", Cmd_Warden, "Player activated command to become warden.");
     RegConsoleCmd("sm_w", Cmd_Warden, "Player activated command to become warden.");
     RegConsoleCmd("sm_unwarden", Cmd_Unwarden, "Player activated command to unwarden.");
     RegConsoleCmd("sm_uw", Cmd_Unwarden, "Player activated command to unwarden.");
     
+    // EVENTS
+    
 }
-
-// Globals
-
-int g_iWarden = 0; // Warden player index, we set to zero to define no warden.
 
 methodmap WardenController {
     public WardenController(int client) //Constructor, must have same name as methodmap
@@ -49,6 +55,11 @@ public Action Cmd_Warden(int client, int args) {
     if(!IsClientInGame(client) || !IsPlayerAlive(client))
         return Plugin_Handled;
         
+    if(!g_cEnabled) {
+        PrintToChat(client, "[SM] Jailbreak not enabled.");
+        return Plugin_Handled;
+    }
+        
     WardenController warden = WardenController(client);
         
     if(warden.iWarden == 0 && client != warden.iWarden)
@@ -68,6 +79,11 @@ public Action Cmd_Unwarden(int client, int args) {
         
     if(!IsClientInGame(client) || !IsPlayerAlive(client))
         return Plugin_Handled;
+        
+    if(!g_cEnabled) {
+        PrintToChat(client, "[SM] Jailbreak not enabled.");
+        return Plugin_Handled;
+    }
         
     WardenController warden = WardenController(client);
     
