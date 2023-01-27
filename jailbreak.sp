@@ -1,4 +1,6 @@
 #include <sourcemod>
+#include <tf2>
+#include <tf2_stocks>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -29,23 +31,9 @@ public void OnPluginStart()
     RegConsoleCmd("sm_uw", Cmd_Unwarden, "Player activated command to unwarden.");
     
     // EVENTS
-    
-}
-
-methodmap WardenController {
-    public WardenController(int client) //Constructor, must have same name as methodmap
-    {
-        return view_as<WardenController>(client);
-    }
-    property int index 
-    { 
-        public get() { return view_as<int>(this); } 
-    }
-    // FIXME: I realised last night I want a global Warden tracker, not per person.
-    /*property int iWarden {
-        public get() { return g_iWarden; }
-        public set( int value ) { g_iWarden = value; }
-    }*/
+    // https://wiki.alliedmods.net/Team_Fortress_2_Events
+    HookEvent("arena_round_start", OnArenaRoundStart); // When players can move.
+    HookEvent("teamplay_round_start", OnRoundStart); // Before players can move (Doesn't affect arena?)
 }
 
 public Action Cmd_Warden(int client, int args) {
@@ -67,15 +55,6 @@ public Action Cmd_Warden(int client, int args) {
         PrintToChat(client, "[SM] Warden is already chosen!");
     }
         
-    /*WardenController warden = WardenController(client);
-        
-    if(warden.iWarden == 0 && client != warden.iWarden) {
-       warden.iWarden = client; // Set warden index to client
-       PrintToChatAll("[SM] %N has become warden!", client);
-    } else {
-        PrintToChat(client, "[SM] You cannot become warden.");
-    }*/
-    
     return Plugin_Handled; // Remove unknown command errors
 }
 
@@ -97,17 +76,22 @@ public Action Cmd_Unwarden(int client, int args) {
         g_iWarden = 0;
         PrintToChat(client, "[SM] You have retired from warden.");
     }
-        
-    /*WardenController warden = WardenController(client);
-    
-    if(warden.iWarden == client) {
-        warden.iWarden = 0;
-        PrintToChatAll("[SM] %N has retired from warden!", client);
-    } else {
-        PrintToChat(client, "[SM] You are not warden!");
-    }*/
     
     return Plugin_Handled;
+}
+
+// EVENTS: 
+
+public Action OnArenaRoundStart(Event event, const char[] name, bool dontBroadcast) {
+    
+    // TODO: Seperate game-mode event calling into seperate files for module management.
+    
+    
+    
+}
+
+public Action OnRoundStart(Event event, const char[] name, bool dontBroadcast) {
+    
 }
 
 // TODO:
