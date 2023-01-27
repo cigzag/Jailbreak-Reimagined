@@ -41,10 +41,11 @@ methodmap WardenController {
     { 
         public get() { return view_as<int>(this); } 
     }
-    property int iWarden {
+    // FIXME: I realised last night I want a global Warden tracker, not per person.
+    /*property int iWarden {
         public get() { return g_iWarden; }
         public set( int value ) { g_iWarden = value; }
-    }
+    }*/
 }
 
 public Action Cmd_Warden(int client, int args) {
@@ -59,15 +60,21 @@ public Action Cmd_Warden(int client, int args) {
         PrintToChat(client, "[SM] Jailbreak not enabled.");
         return Plugin_Handled;
     }
+    
+    if(g_iWarden == 0) { // We check if it's zero, set it to the client index of current warden for easier management.
+        g_iWarden = client;
+    } else {
+        PrintToChat(client, "[SM] Warden is already chosen!");
+    }
         
-    WardenController warden = WardenController(client);
+    /*WardenController warden = WardenController(client);
         
     if(warden.iWarden == 0 && client != warden.iWarden) {
        warden.iWarden = client; // Set warden index to client
        PrintToChatAll("[SM] %N has become warden!", client);
     } else {
         PrintToChat(client, "[SM] You cannot become warden.");
-    }
+    }*/
     
     return Plugin_Handled; // Remove unknown command errors
 }
@@ -83,15 +90,22 @@ public Action Cmd_Unwarden(int client, int args) {
         PrintToChat(client, "[SM] Jailbreak not enabled.");
         return Plugin_Handled;
     }
+    
+    if(g_iWarden != client) {
+        PrintToChat(client, "[SM] You are not warden!");
+    } else {
+        g_iWarden = 0;
+        PrintToChat(client, "[SM] You have retired from warden.");
+    }
         
-    WardenController warden = WardenController(client);
+    /*WardenController warden = WardenController(client);
     
     if(warden.iWarden == client) {
         warden.iWarden = 0;
         PrintToChatAll("[SM] %N has retired from warden!", client);
     } else {
         PrintToChat(client, "[SM] You are not warden!");
-    }
+    }*/
     
     return Plugin_Handled;
 }
