@@ -62,13 +62,12 @@ public Action Cmd_Warden(int client, int args) {
         
     WardenController warden = WardenController(client);
         
-    if(warden.iWarden == 0 && client != warden.iWarden)
-    {
+    if(warden.iWarden == 0 && client != warden.iWarden) {
        warden.iWarden = client; // Set warden index to client
        PrintToChatAll("[SM] %N has become warden!", client);
+    } else {
+        PrintToChat(client, "[SM] You cannot become warden.");
     }
-    
-    PrintToChat(client, "[SM] You cannot become warden.");
     
     return Plugin_Handled; // Remove unknown command errors
 }
@@ -90,9 +89,9 @@ public Action Cmd_Unwarden(int client, int args) {
     if(warden.iWarden == client) {
         warden.iWarden = 0;
         PrintToChatAll("[SM] %N has retired from warden!", client);
+    } else {
+        PrintToChat(client, "[SM] You are not warden!");
     }
-    
-    PrintToChat(client, "[SM] You are not warden!");
     
     return Plugin_Handled;
 }
